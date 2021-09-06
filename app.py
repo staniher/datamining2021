@@ -5,8 +5,7 @@ app=Flask(__name__)
 @app.route('/')
 #Cette fonction retourne la page index.html de notre projet
 def home():
-    return render_template('index.html')
-    
+    return render_template('index.html')   
 @app.route('/predict', methods=['POST']) #predict sera indiqué dans le form de html comme action pour permettre d'appeler la methode predict
 #La fonction ci-dessous fait la prediction
 def predict():
@@ -44,9 +43,7 @@ def predict():
     return render_template('index.html',prediction_text='Ce Patient {}'.format(chaine_prediction))
 #On execute notre application Flask
 if __name__ == "__main__":
-    #app.run(debug=False)
-    app.debug = True
-    app.run(host="0.0.0.0")
+    app.run(debug=True)
     
     
     
