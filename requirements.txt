@@ -12,3 +12,4 @@ requests
 sklearn
 gunicorn
 datetime
+pandas
