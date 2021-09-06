@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700,900&display=swap" rel="stylesheet">
+
+    <!-- N.B: Les fichiers css doivent etre appelés comme suit: -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/icomoon/style.css') }}">   
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>TD L2 CSI/UAC 2021</title>
+  </head>
+  <body>
+  <div class="content">
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5 mr-auto">
+          <h3 class="mb-3">TD L2 CSI/UAC 2021</h3>
+          <p style="text-align:justify;"> Ce projet a été dévéloppé dans le cadre du Cours de Data Mining afin d'apprendre aux étudiants en L2 Conception des Systemes 
+		  d'Informations, de l'Université de l'Assomption au Congo, comment déployer un modele Machine Learning en ligne.</p>
+          <p style="text-align:justify;">Nous avons dévéloppé ce projet en utilisant Extra Trees Regressor comme algorithme et l'avons déployé en utilisant le Framework Flask</p>
+          <p style="text-align:justify;">N.B: Pour les Patients de moins d'un an, veuillez convertir les nombres jours (age) en annee. Par exemple, si un Patient a 10 jours comme
+		  age, faire 10/365 afin d'obtenir son age en annee</p>
+		  <p style="text-align:justify;">Si vous l'avez aimé, veuillez nous contacter via cette adresse <a href="#">staniher@yahoo.fr</a></p>
+          
+        </div>
+
+        <div class="col-md-6">
+          <div class="box">
+            <h3 class="heading">Saisissez les données pour prédire la date de sortie de l'hopital d'un Patient</h3>
+			<div style='text-align:center;font-size:15px;color:#f00';line-height: 0.8>
+			    <!-- Nous affichons ici les resultats de prediction -->
+				{{ prediction_text }} 
+				</div>
+				<!-- Nous precisons predict qui vient du code Flask comme action de notre formulaire html -->
+            <form class="mb-5" action="{{url_for('predict')}}" method="post" id="contactForm" name="contactForm">
+              <div class="row">
+                
+                <div class="col-md-6 form-group">
+                  <label for="name" class="col-form-label">Genre du Patient *</label>
+                  <select class="custom-select" id="budget" name="genre" required>
+					<option selected>Choisir...</option>
+					<option value="1">M</option>
+					<option value="0">F</option>
+					</select>
+                </div>
+                <div class="col-md-6 form-group">
+                  <label for="name" class="col-form-label">Age du Patient *</label>
+                  <input type="number" class="form-control" name="age" id="organization" placeholder="Exemple: 50" required>
+                </div>
+              </div>
+              <div class="row">
+                 <div class="col-md-12 form-group">
+                  <label for="budget" class="col-form-label">Maladie *</label>
+                  <select class="custom-select" id="budget" name="maladie" required>
+					<option selected>Choisir...</option>
+					<option value="0">Affebrile</option>
+					<option value="1">Alteagique</option>
+					<option value="2">Apprendiculaire</option>
+					<option value="3">Asphyxie néonatale</option>
+					<option value="4">Avortement</option>
+					<option value="5">Avortement incomplet</option>
+					<option value="6">Bronchite</option>
+					<option value="7">Bronchite aiguë</option>
+					<option value="8">Choc emotionnel</option>
+					<option value="9">Chute faciale</option>
+					<option value="10">Crise de moque</option>
+					<option value="11">Crise hypertension</option>
+					<option value="12">Cystite aiguë probable</option>
+					<option value="13">Demence senile</option>
+					<option value="14">Detresse respiratoire</option>
+					<option value="15">Diabète</option>
+					<option value="16">Dyspeptique et choc emotionnel</option>
+					<option value="17">Effet du losorton</option>
+					<option value="18">Encepholite aiguë</option>
+					<option value="19">Entérite aiguë</option>
+					<option value="20">Entérite febrile</option>
+					<option value="21">FCD</option>
+					<option value="22">Faible poids de naissance</option>
+					<option value="23">Fièvre</option>
+					<option value="24">Fièvre de courte durée</option>
+					<option value="25">G</option>
+					<option value="26">GE febrile</option>
+					<option value="27">GEA febrile</option>
+					<option value="28">GEAA</option>
+					<option value="29">Gastrite aiguë</option>
+					<option value="30">Grande prématurée</option>
+					<option value="31">Grippe et palustre</option>
+					<option value="32">Hernie</option>
+					<option value="33">Hernie bilatérale</option>
+					<option value="34">Hygiène du trime</option>
+					<option value="35">Hypertetique</option>
+					<option value="36">Hypotrophie</option>
+					<option value="37">IMM</option>
+					<option value="38">IN natale</option>
+					<option value="39">Infection</option>
+					<option value="40">Infection couchaire</option>
+					<option value="41">Infection et Diabète</option>
+					<option value="42">Infection grippe</option>
+					<option value="43">Infection migneneux</option>
+					<option value="44">Infection utérine</option>
+					<option value="45">KOD</option>
+					<option value="46">MAP</option>
+					<option value="47">MAV</option>
+					<option value="48">Macrosomie</option>
+					<option value="49">Malaise gravidique</option>
+					<option value="50">Myome utérine</option>
+					<option value="51">Obstobeptique</option>
+					<option value="52">Paludisme</option>
+					<option value="53">Paludisme grave</option>
+					<option value="54">Palustose</option>
+					<option value="55">Palustre</option>
+					<option value="56">Palustre et Rhume</option>
+					<option value="57">Palustre grave</option>
+					<option value="58">Particolis</option>
+					<option value="59">Petit prématuré</option>
+					<option value="60">Polytraumatique</option>
+					<option value="61">Porte entrée digestive</option>
+					<option value="62">Prositose</option>
+					<option value="63">Prématuré asphyxié</option>
+					<option value="64">Rhumatisme</option>
+					<option value="65">Rhume</option>
+					<option value="66">Rhume bronchite</option>
+					<option value="67">Risque infectieux</option>
+					<option value="68">Salmonellose</option>
+					<option value="69">Sepsis</option>
+					<option value="70">Tardive probable</option>
+					<option value="71">Traumatisme du bassin</option>
+					<option value="72">Ulcère gastro</option>
+					
+					</select>
+                </div>
+              </div>
+              <div class="row mb-3">
+			  <div class="col-md-12 form-group">
+                  <label for="email" class="col-form-label">Service dans lequel le Patient est admis *</label>
+                   <select class="custom-select" id="budget" name="service" required>
+					<option selected>Choisir...</option>
+					<option value="0">Pediatrie</option>
+					<option value="1">Hospitalisation</option>
+					<option value="2">Gynecologie</option>
+					<option value="3">Neonatologie</option>
+					</select>
+                </div>
+               
+                <div class="col-md-12 form-group">
+                  <label for="message" class="col-form-label">Date d'entrée à l'hôpital *</label>
+                  <input type="date" class="form-control" name="date" id="date" placeholder="Example: January 15th" required>
+               
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  
+				  <button class="btn btn-block btn-primary rounded-0 py-2 px-4" id='submit' type="submit" value="Submit">Prédire</button>
+                  <span class="submitting"></span>
+                </div>
+              </div>
+            </form>
+
+            <div id="form-message-warning mt-4"></div> 
+
+          </div>
+        </div>
+      </div>
+  </div>
+    
+    
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/main.js"></script>
+
+  </body>
+</html>
