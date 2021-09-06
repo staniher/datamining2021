@@ -30,9 +30,9 @@ def predict():
     #de l'entree a l'hopital pour trouver la date de sortie
     date_sortie_hopital = date_entree_hopital + timedelta(days=prediction) #Prediction ici contient le nombre de jours predits 
     #On recupere le jour en francais(Par exemple Samedi, Lundi...)
-    jour_semaine_sortie=date_sortie_hopital.day_name(locale='French')
+    jour_semaine_sortie=date_sortie_hopital.day_name()
     #On recupere le mois en francais(Par exemple Janvier, Mars...)
-    mois_sortie=date_sortie_hopital.month_name(locale='French')
+    mois_sortie=date_sortie_hopital.month_name()
     #On recupere l'annee de sortie de l'hopital(Par exemple 2021)
     annee_sortie = date_sortie_hopital.year
     #On recupere le jour de sortie de l'hopital(Par exemple 11, 25, 30)
