@@ -2,12 +2,9 @@ Flask==1.1.2
 Jinja2
 Werkzeug==0.8.3
 certifi==0.0.8
-chardet
-distribute
 gunicorn==0.14.2
 requests==0.11.1
 python==3.8.8
 joblib==0.14.1
 pandas==1.2.4
 numpy
-
