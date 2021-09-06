@@ -6,7 +6,7 @@ app=Flask(__name__)
 #Cette fonction retourne la page index.html de notre projet
 def home():
     return render_template('index.html')   
-@app.route('/predict', methods=['POST']) #predict sera indiqué dans le form de html comme action pour permettre d'appeler la methode predict
+@app.route('/predict', methods=['GET', 'POST']) #predict sera indiqué dans le form de html comme action pour permettre d'appeler la methode predict
 #La fonction ci-dessous fait la prediction
 def predict():
     import joblib
