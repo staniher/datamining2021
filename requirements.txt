@@ -1,10 +1,9 @@
-Flask==1.1.2
+Flask
 Jinja2
-Werkzeug==0.8.3
-certifi==0.0.8
+Werkzeug
+certifi
 gunicorn
 requests
-python
-joblib==0.14.1
-pandas==1.2.4
+joblib
+pandas
 numpy
