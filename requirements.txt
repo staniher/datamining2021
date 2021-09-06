@@ -1,14 +1,13 @@
-Click==7.0
-Flask==1.1.1
-gunicorn==19.9.0
-itsdangerous==1.1.0
-Jinja2==2.10.1
-MarkupSafe==1.1.1
-Werkzeug==0.15.6
-joblib
+Flask==1.1.2
+Jinja2==2.6
+Werkzeug==0.8.3
+certifi==0.0.8
+chardet==1.0.1
+distribute==0.6.24
+gunicorn==0.14.2
+requests==0.11.1
+python==3.8.8
+joblib==0.14.1
+pandas==1.2.4
 numpy
-requests
-sklearn
-datetime
-pandas
 
