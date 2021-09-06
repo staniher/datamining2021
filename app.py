@@ -1,5 +1,8 @@
 from flask import Flask,request,render_template
 import numpy as np
+import joblib
+import pandas as pd
+from datetime import datetime,timedelta
 app=Flask(__name__)
 
 @app.route('/')
@@ -9,7 +12,6 @@ def home():
 @app.route('/predict', methods=['GET', 'POST']) #predict sera indiqué dans le form de html comme action pour permettre d'appeler la methode predict
 #La fonction ci-dessous fait la prediction
 def predict():
-    import joblib
     #Nous chargeons notre modele sauvegardé dans le projet Flask pour l'utiliser
     model=joblib.load('ModelL2CSI2021.ml')
     #Nous récupérons toutes les valeurs saisies dans le formulaire html sous forme d'une liste
@@ -23,9 +25,7 @@ def predict():
     #On predit en utilisant le modele qui a été chargé ci-haut
     prediction=model.predict(features_model)[0]
     #On convertit la date de l'entree à l'hopital en datetime pour nous aider à y tirer le jour, le mois, l'annee pour une sortie plus aisée de prédiction
-    import pandas as pd
     date_entree_hopital=pd.to_datetime(date_hospitalisation)
-    from datetime import datetime,timedelta
     #Nous ajoutons les jours predits de sortie a l'hopital a la date saisie
     #de l'entree a l'hopital pour trouver la date de sortie
     date_sortie_hopital = date_entree_hopital + timedelta(days=prediction) #Prediction ici contient le nombre de jours predits 
