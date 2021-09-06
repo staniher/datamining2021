@@ -5,6 +5,5 @@ certifi
 gunicorn
 requests
 joblib
-pandas
 numpy
 scikit-learn
