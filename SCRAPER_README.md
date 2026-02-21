@@ -1,44 +1,38 @@
 
-# Analyse des Chercheurs Congolais - Outil de Scraping et Sentiment
+# Outil de Collecte de Données Chercheurs RDC
 
-Ce projet est conçu pour collecter des données sur les chercheurs affiliés aux institutions de la RD Congo et analyser le sentiment associé à leurs publications et profils.
+Ce projet permet d'extraire des données sur les chercheurs congolais pour l'analyse de sentiment.
 
-## Fonctionnalités
+## Résolution des Problèmes de Blocage (CAPTCHA / Cloudflare)
 
-- **Google Scholar Scraper** : Récupère les noms, affiliations, intérêts et publications récentes.
-- **ResearchGate Scraper** : Collecte les informations de profil public, supportant les liens directs vers les institutions.
-- **Social Media Linker** : Génère des URLs de recherche ciblées pour Facebook et les Blogs.
-- **Analyse de Sentiment** : Évalue le ton (Positif/Négatif/Neutre) des textes en français (recherche et publications).
-- **Export Dataset** : Sauvegarde les résultats dans un fichier CSV structuré.
+Google Scholar et ResearchGate ont des protections anti-bot strictes. Si vous recevez des messages "Bloqué" ou si aucune donnée n'est extraite, voici les solutions :
 
-## Structure du Code
+### 1. Utilisation de fichiers HTML locaux (Mode Manuel)
+C'est la méthode la plus fiable si l'outil est bloqué :
+- Allez sur Google Scholar ou ResearchGate dans votre navigateur habituel.
+- Faites votre recherche (ex: "Université de l'Assomption au Congo").
+- Si un CAPTCHA apparaît, résolvez-le manuellement.
+- Sauvegardez la page au format HTML (Ctrl+S -> "Page Web, HTML uniquement").
+- Lancez le script en passant le fichier en argument :
+  ```bash
+  python main_scraper.py mon_fichier_scholar.html mon_fichier_rg.html
+  ```
 
-- `main_scraper.py` : Point d'entrée principal qui orchestre la collecte.
-- `scholar_scraper.py` : Logique de scraping pour Google Scholar.
-- `researchgate_scraper.py` : Logique de scraping pour ResearchGate.
-- `social_searcher.py` : Analyse de sentiment et liens sociaux.
-- `blog_scraper.py` : Outil pour extraire du texte de blogs spécifiques.
-- `institutions.json` : Base de données des institutions congolaises (incluant l'UAC).
+### 2. Délai et Rotation
+Les scripts intègrent des délais aléatoires et une rotation de User-Agent. Évitez de lancer l'extraction trop fréquemment depuis la même adresse IP.
 
-## Utilisation
+### 3. Recherche par Snippets
+Si le scraping direct échoue, le script tente automatiquement de récupérer les informations depuis les résultats de recherche Google (snippets), ce qui est moins souvent bloqué.
 
-1. **Installer les dépendances** :
-   ```bash
-   pip install beautifulsoup4 pandas playwright
-   playwright install chromium
-   ```
+## Utilisation Classique
 
-2. **Lancer l'analyse globale** :
-   ```bash
-   python main_scraper.py
-   ```
-   Les résultats seront sauvegardés dans `chercheurs_rdc_dataset.csv`.
+```bash
+# Installer les dépendances
+pip install beautifulsoup4 pandas playwright playwright-stealth
+playwright install chromium
 
-## Note Spéciale : Université de l'Assomption au Congo (UAC)
+# Lancer l'extraction automatique
+python main_scraper.py
+```
 
-Pour l'UAC, un dataset pré-extrait est fourni dans `chercheurs_uac_dataset.csv` en raison des protections anti-bot strictes sur ResearchGate. Le script `main_scraper.py` est configuré pour tenter d'extraire des données fraîches en utilisant le lien direct fourni.
-
-## Éthique et Limitations
-
-- **Bot Detection** : Google Scholar et ResearchGate utilisent des CAPTCHAs et Cloudflare. Les scripts incluent des délais, mais l'utilisation de proxies est recommandée pour des volumes importants.
-- **Analyse** : L'analyse de sentiment est basée sur un dictionnaire académique français.
+Les résultats sont sauvegardés dans `chercheurs_rdc_dataset.csv`.
