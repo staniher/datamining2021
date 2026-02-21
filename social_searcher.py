@@ -11,13 +11,14 @@ SENTIMENT_DICT = {
     "recherche": 0.5, "science": 0.5, "contribution": 1, "amélioration": 1,
     "fructueux": 1, "pertinent": 1, "efficace": 1, "brillant": 1, "prometteur": 1,
     "qualité": 0.5, "important": 0.5, "bravo": 1, "félicitations": 1,
+    "académique": 0.2, "connaissance": 0.5, "partage": 0.5, "avenir": 0.5,
     # Négatif
     "difficile": -1, "manque": -1, "problème": -1, "crise": -1, "échec": -1,
     "limitation": -1, "obstacle": -1, "retard": -1, "insuffisant": -1,
     "pauvreté": -1, "maladie": -1, "souffrance": -1, "conflit": -1, "négatif": -1,
     "risque": -0.5, "défi": -0.5, "instabilité": -1, "préoccupation": -1,
     "erreur": -1, "mauvais": -1, "faiblesse": -1, "urgent": -0.5, "danger": -1,
-    "précaire": -1, "décevant": -1, "limité": -0.5
+    "précaire": -1, "décevant": -1, "limité": -0.5, "corruption": -1, "guerre": -1
 }
 
 def get_sentiment(text):
@@ -28,7 +29,7 @@ def get_sentiment(text):
         return "Neutral"
 
     score = 0
-    words = text.lower().replace(".", "").replace(",", "").replace("!", "").replace("?", "").split()
+    words = text.lower().replace(".", "").replace(",", "").replace("!", "").replace("?", "").replace("(", "").replace(")", "").split()
 
     for w in words:
         if w in SENTIMENT_DICT:

@@ -2,13 +2,18 @@
 {
   "universities": [
     {"name": "Université de l'Assomption au Congo", "abbreviation": "UAC", "location": "Butembo", "researchgate": "https://www.researchgate.net/institution/Universite-de-lAssomption-au-Congo"},
+    {"name": "Université Catholique du Graben", "abbreviation": "UCG", "location": "Butembo", "researchgate": "https://www.researchgate.net/institution/Universite-Catholique-du-Graben"},
+    {"name": "Université Adventiste de Lukanga", "abbreviation": "UNILUK", "location": "Butembo"},
+    {"name": "Université de Goma", "abbreviation": "UNIGOM", "location": "Goma", "researchgate": "https://www.researchgate.net/institution/University-of-Goma"},
+    {"name": "Institut Supérieur d'Informatique et de Gestion", "abbreviation": "ISIG", "location": "Goma"},
+    {"name": "Université Libre des Pays des Grands Lacs", "abbreviation": "ULPGL", "location": "Goma"},
     {"name": "Université de Kinshasa", "abbreviation": "UNIKIN", "location": "Kinshasa"},
     {"name": "Université de Lubumbashi", "abbreviation": "UNILU", "location": "Lubumbashi"},
     {"name": "Université de Kisangani", "abbreviation": "UNIKIS", "location": "Kisangani"},
     {"name": "Université Catholique du Congo", "abbreviation": "UCC", "location": "Kinshasa"},
     {"name": "Université Protestante au Congo", "abbreviation": "UPC", "location": "Kinshasa"},
-    {"name": "Université de Goma", "abbreviation": "UNIGOM", "location": "Goma"},
     {"name": "Université Officielle de Bukavu", "abbreviation": "UOB", "location": "Bukavu"},
+    {"name": "Université Catholique de Bukavu", "abbreviation": "UCB", "location": "Bukavu"},
     {"name": "Université de Bandundu", "abbreviation": "UNIBAND", "location": "Bandundu"},
     {"name": "Université de Mbandaka", "abbreviation": "UNIMBA", "location": "Mbandaka"},
     {"name": "Université Pédagogique Nationale", "abbreviation": "UPN", "location": "Kinshasa"}
