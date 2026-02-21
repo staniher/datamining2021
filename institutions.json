@@ -1,6 +1,7 @@
 
 {
   "universities": [
+    {"name": "Université de l'Assomption au Congo", "abbreviation": "UAC", "location": "Butembo", "researchgate": "https://www.researchgate.net/institution/Universite-de-lAssomption-au-Congo"},
     {"name": "Université de Kinshasa", "abbreviation": "UNIKIN", "location": "Kinshasa"},
     {"name": "Université de Lubumbashi", "abbreviation": "UNILU", "location": "Lubumbashi"},
     {"name": "Université de Kisangani", "abbreviation": "UNIKIS", "location": "Kisangani"},

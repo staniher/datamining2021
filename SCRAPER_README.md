@@ -5,18 +5,20 @@ Ce projet est conçu pour collecter des données sur les chercheurs affiliés au
 
 ## Fonctionnalités
 
-- **Google Scholar Scraper** : Récupère les noms, affiliations et centres d'intérêt.
-- **ResearchGate Scraper** : Collecte les informations de profil public.
+- **Google Scholar Scraper** : Récupère les noms, affiliations, intérêts et publications récentes.
+- **ResearchGate Scraper** : Collecte les informations de profil public, supportant les liens directs vers les institutions.
 - **Social Media Linker** : Génère des URLs de recherche ciblées pour Facebook et les Blogs.
-- **Analyse de Sentiment** : Évalue le ton (Positif/Négatif/Neutre) des textes en français.
+- **Analyse de Sentiment** : Évalue le ton (Positif/Négatif/Neutre) des textes en français (recherche et publications).
+- **Export Dataset** : Sauvegarde les résultats dans un fichier CSV structuré.
 
 ## Structure du Code
 
-- `main_scraper.py` : Point d'entrée principal.
+- `main_scraper.py` : Point d'entrée principal qui orchestre la collecte.
 - `scholar_scraper.py` : Logique de scraping pour Google Scholar.
 - `researchgate_scraper.py` : Logique de scraping pour ResearchGate.
 - `social_searcher.py` : Analyse de sentiment et liens sociaux.
-- `institutions.json` : Base de données des institutions congolaises.
+- `blog_scraper.py` : Outil pour extraire du texte de blogs spécifiques.
+- `institutions.json` : Base de données des institutions congolaises (incluant l'UAC).
 
 ## Utilisation
 
@@ -26,13 +28,17 @@ Ce projet est conçu pour collecter des données sur les chercheurs affiliés au
    playwright install chromium
    ```
 
-2. **Lancer l'analyse** :
+2. **Lancer l'analyse globale** :
    ```bash
-   python main_scraper.py "Université de Kinshasa"
+   python main_scraper.py
    ```
+   Les résultats seront sauvegardés dans `chercheurs_rdc_dataset.csv`.
+
+## Note Spéciale : Université de l'Assomption au Congo (UAC)
+
+Pour l'UAC, un dataset pré-extrait est fourni dans `chercheurs_uac_dataset.csv` en raison des protections anti-bot strictes sur ResearchGate. Le script `main_scraper.py` est configuré pour tenter d'extraire des données fraîches en utilisant le lien direct fourni.
 
 ## Éthique et Limitations
 
-- **Respect des ToS** : Les scripts utilisent des délais pour respecter les serveurs. Une utilisation abusive peut mener à un bannissement d'IP.
-- **Sentiment** : L'analyse est basée sur un dictionnaire. Pour plus de précision, envisagez d'utiliser un modèle comme CamemBERT.
-- **Facebook** : En raison des restrictions strictes de Facebook, nous fournissons des liens de recherche plutôt qu'un scraping direct pour éviter les blocages de compte.
+- **Bot Detection** : Google Scholar et ResearchGate utilisent des CAPTCHAs et Cloudflare. Les scripts incluent des délais, mais l'utilisation de proxies est recommandée pour des volumes importants.
+- **Analyse** : L'analyse de sentiment est basée sur un dictionnaire académique français.

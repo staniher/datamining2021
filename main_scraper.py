@@ -4,82 +4,91 @@ import json
 import os
 import sys
 import pandas as pd
+import random
 from scholar_scraper import get_scholar_authors
 from researchgate_scraper import get_researchgate_authors
 from social_searcher import analyze_researcher_social, get_sentiment
 
 async def run_analysis():
-    # Chargement des institutions depuis le fichier JSON
+    # Chargement des institutions
     if os.path.exists("institutions.json"):
         with open("institutions.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-            # On récupère les noms des universités
-            institutions = [inst["name"] for inst in data.get("universities", [])]
+            # On combine universités et centres de recherche
+            targets = data.get("universities", []) + data.get("research_centers", [])
     else:
-        # Valeur par défaut si le fichier est absent
-        institutions = ["Université de Kinshasa"]
+        targets = [{"name": "Université de l'Assomption au Congo", "researchgate": "https://www.researchgate.net/institution/Universite-de-lAssomption-au-Congo"}]
 
-    print(f"Démarrage de l'extraction pour {len(institutions)} institutions.")
+    print(f"Démarrage de l'extraction pour {len(targets)} institutions.")
 
     all_data = []
 
-    # Limitation pour la démonstration (2 premières institutions)
-    for inst in institutions[:2]:
-        print(f"\n--- Collecte des données pour : {inst} ---")
+    for item in targets:
+        inst_name = item["name"]
+        rg_url = item.get("researchgate", inst_name)
 
-        # Lancement des scrapers en parallèle
-        scholar_task = get_scholar_authors(inst, max_authors=5)
-        rg_task = get_researchgate_authors(inst, max_authors=5)
+        print(f"\n--- Collecte des données pour : {inst_name} ---")
 
-        scholar_results, rg_results = await asyncio.gather(scholar_task, rg_task)
+        # Exécution séquentielle pour minimiser les risques de blocage IP
+        print(f"Extraction Google Scholar...")
+        scholar_results = await get_scholar_authors(inst_name, max_authors=5)
+        await asyncio.sleep(random.uniform(5, 10)) # Pause entre les plateformes
 
-        # Traitement des résultats de Google Scholar
+        print(f"Extraction ResearchGate...")
+        rg_results = await get_researchgate_authors(rg_url, max_authors=10)
+        await asyncio.sleep(random.uniform(5, 10)) # Pause entre les institutions
+
+        # Traitement Scholar
         for author in scholar_results:
-            # On combine les publications et intérêts pour l'analyse de sentiment
             full_text = " ".join(author.get("publications", [])) + " " + " ".join(author.get("interests", []))
             sentiment = get_sentiment(full_text)
+            social = analyze_researcher_social(author["name"], full_text)
 
-            # Préparation de la ligne pour le dataset
             row = {
                 "Nom": author["name"],
                 "Institution": author["affiliation"],
                 "Plateforme": "Google Scholar",
                 "Lien": author["link"],
                 "Interets": ", ".join(author["interests"]),
-                "Publications_Extraits": " | ".join(author["publications"]),
-                "Sentiment_Analyse": sentiment
+                "Donnees_Extraites": " | ".join(author["publications"]),
+                "Sentiment_Analyse": sentiment,
+                "Lien_Facebook": social["search_links"]["facebook_search"],
+                "Lien_Blog": social["search_links"]["blog_search"]
             }
             all_data.append(row)
 
-        # Traitement des résultats de ResearchGate
+        # Traitement ResearchGate
         for author in rg_results:
             full_text = " ".join(author.get("info", []))
             sentiment = get_sentiment(full_text)
+            social = analyze_researcher_social(author["name"], full_text)
 
             row = {
                 "Nom": author["name"],
-                "Institution": inst,
+                "Institution": inst_name,
                 "Plateforme": "ResearchGate",
                 "Lien": author["link"],
                 "Interets": "N/A",
-                "Publications_Extraits": " | ".join(author["info"]),
-                "Sentiment_Analyse": sentiment
+                "Donnees_Extraites": " | ".join(author["info"]),
+                "Sentiment_Analyse": sentiment,
+                "Lien_Facebook": social["search_links"]["facebook_search"],
+                "Lien_Blog": social["search_links"]["blog_search"]
             }
             all_data.append(row)
 
-    # Création du dataset avec Pandas
+        if scholar_results or rg_results:
+            print(f"-> {len(scholar_results) + len(rg_results)} chercheurs trouvés.")
+
+    if not all_data:
+        print("\nAucune donnée n'a pu être extraite automatiquement. Utilisez les scripts individuels pour le débogage.")
+        return
+
+    # Création du dataset
     df = pd.DataFrame(all_data)
-
-    # Exportation en CSV et JSON
     csv_file = "chercheurs_rdc_dataset.csv"
-    json_file = "chercheurs_rdc_dataset.json"
-
     df.to_csv(csv_file, index=False, encoding="utf-8-sig")
-    df.to_json(json_file, orient="records", indent=2, force_ascii=False)
 
-    print(f"\nExtraction terminée. {len(all_data)} chercheurs sauvegardés.")
-    print(f"Dataset CSV : {csv_file}")
-    print(f"Dataset JSON : {json_file}")
+    print(f"\nExtraction terminée. {len(all_data)} chercheurs sauvegardés dans {csv_file}")
 
 if __name__ == "__main__":
     asyncio.run(run_analysis())
