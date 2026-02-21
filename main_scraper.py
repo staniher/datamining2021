@@ -10,8 +10,9 @@ from scholar_scraper import get_scholar_authors
 from researchgate_scraper import get_researchgate_authors
 from google_snippet_scraper import get_researchers_from_google
 from social_searcher import analyze_researcher_social, get_sentiment
+from openalex_extractor import get_drc_works
 
-async def run_analysis(local_files=None, limit=3):
+async def run_analysis(local_files=None, limit=2, use_openalex=True):
     # Chargement des institutions
     if os.path.exists("institutions.json"):
         with open("institutions.json", "r", encoding="utf-8") as f:
@@ -22,11 +23,25 @@ async def run_analysis(local_files=None, limit=3):
 
     all_data = []
 
-    # MODE LOCAL : Traitement des fichiers HTML fournis ou présents dans 'imports/'
+    # --- 1. OPTION OPENALEX (La plus fiable et recommandée) ---
+    if use_openalex:
+        print("\n=== PHASE 1 : Extraction via OpenAlex (API Officielle) ===")
+        oa_works = get_drc_works(max_works=500) # Limite par défaut
+        for w in oa_works:
+            all_data.append({
+                "Nom": w["Auteurs_RDC"],
+                "Institution": "RDC (Multi)",
+                "Plateforme": "OpenAlex",
+                "Lien": w["DOI"],
+                "Donnees_Extraites": f"{w['Titre']} - {w['Abstract']}",
+                "Sentiment_Analyse": w["Sentiment"]
+            })
+        print(f"-> {len(oa_works)} publications récupérées via OpenAlex.")
+
+    # --- 2. OPTION LOCALE (Fichiers HTML) ---
     if local_files:
-        print("\n=== MODE LOCAL : Analyse des fichiers fournis ===")
+        print("\n=== PHASE 2 : Analyse des fichiers locaux fournis ===")
         for file_path in local_files:
-            print(f"Fichier : {file_path}")
             if "scholar" in file_path.lower():
                 results = await get_scholar_authors("Local", local_file=file_path)
                 platform = "Google Scholar (Local)"
@@ -36,92 +51,64 @@ async def run_analysis(local_files=None, limit=3):
 
             for author in results:
                 text = " ".join(author.get("publications", [])) if "publications" in author else " ".join(author.get("info", []))
-                sentiment = get_sentiment(text)
                 all_data.append({
                     "Nom": author["name"], "Institution": author.get("affiliation", "N/A"),
                     "Plateforme": platform, "Lien": author["link"],
-                    "Donnees_Extraites": text, "Sentiment_Analyse": sentiment
+                    "Donnees_Extraites": text, "Sentiment_Analyse": get_sentiment(text)
                 })
 
-    # MODE EN LIGNE : Si aucun fichier local n'est spécifié
-    else:
-        print(f"\n=== MODE EN LIGNE : Extraction pour {len(targets)} institutions ===")
-        # On limite le nombre d'institutions pour éviter les blocages IP massifs
+    # --- 3. OPTION EN LIGNE (Web Scraping - Si demandé explicitement ou si peu de données) ---
+    if not local_files and len(all_data) < 10:
+        print("\n=== PHASE 3 : Extraction Web (Scholar / ResearchGate) ===")
         for item in targets[:limit]:
             inst_name = item["name"]
-            rg_url = item.get("researchgate", inst_name)
-            print(f"\n--- Travail sur : {inst_name} ---")
+            print(f"Extraction pour : {inst_name}...")
 
-            # 1. Tentatives directes (avec délais)
+            # Essai direct
             scholar_results = await get_scholar_authors(inst_name, max_authors=3)
-            await asyncio.sleep(random.uniform(2, 5))
-            rg_results = await get_researchgate_authors(rg_url, max_authors=3)
+            rg_results = await get_researchgate_authors(item.get("researchgate", inst_name), max_authors=3)
 
-            # 2. Fallbacks si bloqué
+            # Fallback Snippets
             if not scholar_results:
-                print("   [!] Scholar bloqué ou vide. Utilisation du fallback Google...")
                 snippets = await get_researchers_from_google(inst_name, platform="scholar.google.com")
                 for s in snippets:
-                    all_data.append({
-                        "Nom": s["name"], "Institution": inst_name, "Plateforme": s["source"],
-                        "Lien": s["link"], "Donnees_Extraites": s["snippet"], "Sentiment_Analyse": get_sentiment(s["snippet"])
-                    })
+                    all_data.append({"Nom": s["name"], "Institution": inst_name, "Plateforme": s["source"], "Lien": s["link"], "Donnees_Extraites": s["snippet"], "Sentiment_Analyse": get_sentiment(s["snippet"])})
 
             if not rg_results:
-                print("   [!] ResearchGate bloqué ou vide. Utilisation du fallback Google...")
                 snippets = await get_researchers_from_google(inst_name, platform="researchgate.net")
                 for s in snippets:
-                    all_data.append({
-                        "Nom": s["name"], "Institution": inst_name, "Plateforme": s["source"],
-                        "Lien": s["link"], "Donnees_Extraites": s["snippet"], "Sentiment_Analyse": get_sentiment(s["snippet"])
-                    })
+                    all_data.append({"Nom": s["name"], "Institution": inst_name, "Plateforme": s["source"], "Lien": s["link"], "Donnees_Extraites": s["snippet"], "Sentiment_Analyse": get_sentiment(s["snippet"])})
 
-            # 3. Ajout des résultats directs réussis
+            # Résultats directs
             for author in scholar_results:
                 text = " ".join(author.get("publications", [])) + " " + " ".join(author.get("interests", []))
-                all_data.append({
-                    "Nom": author["name"], "Institution": author["affiliation"], "Plateforme": "Google Scholar",
-                    "Lien": author["link"], "Donnees_Extraites": text, "Sentiment_Analyse": get_sentiment(text)
-                })
+                all_data.append({"Nom": author["name"], "Institution": author["affiliation"], "Plateforme": "Google Scholar", "Lien": author["link"], "Donnees_Extraites": text, "Sentiment_Analyse": get_sentiment(text)})
 
             for author in rg_results:
                 text = " ".join(author.get("info", []))
-                all_data.append({
-                    "Nom": author["name"], "Institution": inst_name, "Plateforme": "ResearchGate",
-                    "Lien": author["link"], "Donnees_Extraites": text, "Sentiment_Analyse": get_sentiment(text)
-                })
-
-            print(f"   -> {len(all_data)} chercheurs collectés jusqu'à présent.")
-            await asyncio.sleep(random.uniform(10, 20)) # Grande pause entre institutions
+                all_data.append({"Nom": author["name"], "Institution": inst_name, "Plateforme": "ResearchGate", "Lien": author["link"], "Donnees_Extraites": text, "Sentiment_Analyse": get_sentiment(text)})
 
     if not all_data:
-        print("\n[ERREUR] Aucune donnée n'a pu être extraite.")
-        print("CONSEIL : Ouvrez ResearchGate dans votre navigateur, résolvez le captcha, enregistrez la page HTML et relancez avec le fichier.")
+        print("\nAucune donnée n'a pu être extraite.")
         return
 
     # Sauvegarde finale
     df = pd.DataFrame(all_data)
-    # Suppression des doublons basés sur le nom et le lien
     df = df.drop_duplicates(subset=["Nom", "Lien"])
 
-    csv_file = "chercheurs_rdc_dataset.csv"
+    csv_file = "chercheurs_rdc_dataset_final.csv"
     df.to_csv(csv_file, index=False, encoding="utf-8-sig")
-    print(f"\nExtraction terminée ! {len(df)} chercheurs uniques sauvegardés dans '{csv_file}'.")
+    print(f"\nTerminé ! {len(df)} chercheurs/publications sauvegardés dans '{csv_file}'.")
 
 if __name__ == "__main__":
-    # Vérification si des arguments sont des fichiers HTML ou des dossiers
     args = sys.argv[1:]
-    files_to_parse = []
+    files = [a for a in args if a.endswith(".html") or os.path.isdir(a)]
 
-    for arg in args:
-        if arg.endswith(".html") and os.path.exists(arg):
-            files_to_parse.append(arg)
-        elif os.path.isdir(arg):
-            files_to_parse.extend(glob.glob(os.path.join(arg, "*.html")))
+    html_files = []
+    for f in files:
+        if os.path.isdir(f):
+            html_files.extend(glob.glob(os.path.join(f, "*.html")))
+        else:
+            html_files.append(f)
 
-    # Si on trouve des fichiers HTML, on lance en mode local
-    if files_to_parse:
-        asyncio.run(run_analysis(local_files=files_to_parse))
-    else:
-        # Sinon mode automatique
-        asyncio.run(run_analysis())
+    asyncio.run(run_analysis(local_files=html_files))

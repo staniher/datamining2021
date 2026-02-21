@@ -1,49 +1,45 @@
 
-# 🇨🇩 Extracteur de Données Chercheurs RDC (Version Robuste)
+# 🇨🇩 Solution d'Extraction de Données Chercheurs RDC (Version Optmisée)
 
-Ce projet est une suite d'outils avancée pour extraire les informations des chercheurs congolais sur ResearchGate et Google Scholar, même en cas de blocage par les serveurs.
+Ce projet a été mis à jour pour résoudre les problèmes de blocage massif rencontrés sur ResearchGate et Google Scholar en utilisant l'API officielle **OpenAlex**.
 
-## 🚀 Comment l'utiliser sur Windows
+## 🛠️ Nouvelles Fonctionnalités
+
+1.  **Extraction via OpenAlex (Recommandé)** : Utilise l'API officielle pour récupérer des milliers de publications de chercheurs congolais sans risque de blocage.
+2.  **Reconstruction d'Abstracts** : Récupère et reconstruit les résumés des travaux pour une analyse de sentiment précise.
+3.  **Système Hybride** : Combine l'API, le web scraping (avec mode furtif) et le fallback par snippets Google.
+4.  **Mode Manuel** : Analyse toujours possible des fichiers HTML sauvegardés localement.
+
+## 🚀 Utilisation Rapide
 
 ### 1. Installation
-Ouvrez votre terminal (CMD ou PowerShell) dans le dossier du projet :
 ```bash
-pip install beautifulsoup4 pandas playwright playwright-stealth
+pip install requests beautifulsoup4 pandas playwright playwright-stealth
 playwright install chromium
 ```
 
-### 2. Mode Automatique (Essai direct)
-Le script tente d'abord d'accéder directement aux sites, puis bascule sur les "snippets" Google si l'accès est refusé.
+### 2. Lancer l'extraction optimisée
 ```bash
 python main_scraper.py
 ```
+Cela générera le fichier `chercheurs_rdc_dataset_final.csv` contenant les données d'OpenAlex et les éventuels résultats de web scraping.
 
-### 3. Mode Manuel (Recommandé pour contourner 100% des blocages)
-Si vous voyez des messages "Bloqué par Cloudflare" ou "CAPTCHA" :
-1. Ouvrez **Google Chrome** ou **Edge**.
-2. Allez sur [ResearchGate](https://www.researchgate.net) ou [Google Scholar](https://scholar.google.com).
-3. Faites votre recherche (ex: "Université de l'Assomption au Congo").
-4. Si un Captcha s'affiche, résolvez-le.
-5. Une fois la liste des chercheurs affichée, faites **Ctrl + S**.
-6. Choisissez le type : **"Page Web, HTML uniquement"** et enregistrez le fichier (ex: `uac.html`).
-7. Placez vos fichiers `.html` dans un dossier nommé `imports`.
-8. Lancez l'analyse sur ce dossier :
-   ```bash
-   python main_scraper.py imports
-   ```
+## 📖 Guide de Survie Anti-Blocage
 
-## 📊 Résultats
-Les données sont sauvegardées dans `chercheurs_rdc_dataset.csv`.
-- **Nom** : Identité du chercheur.
-- **Institution** : Affiliation détectée.
-- **Plateforme** : Origine de la donnée.
-- **Donnees_Extraites** : Liste des publications ou informations de profil.
-- **Sentiment_Analyse** : Analyse automatique (Positif/Neutre/Négatif) basée sur les textes extraits.
+Si vous tenez absolument à utiliser ResearchGate/Scholar et que vous voyez des erreurs :
+1.  **Utilisez OpenAlex** (par défaut dans le script) : c'est la source la plus riche et la plus stable.
+2.  **Mode HTML Local** :
+    - Allez sur ResearchGate dans votre navigateur.
+    - Faites votre recherche.
+    - Enregistrez la page (**Ctrl+S**, mode "HTML uniquement").
+    - Lancez : `python main_scraper.py chemin/vers/votre_fichier.html`
 
-## 🛠️ Structure technique
-- `main_scraper.py` : Chef d'orchestre (Gère les modes direct, snippet et local).
-- `scholar_scraper.py` / `researchgate_scraper.py` : Logique d'extraction spécifique.
-- `google_snippet_scraper.py` : Solution de secours via Google Search.
-- `social_searcher.py` : Analyse de sentiment en français.
+## 📊 Analyse de Sentiment
+L'outil analyse automatiquement le ton des abstracts et des descriptions extraites en utilisant un dictionnaire spécialisé pour la recherche scientifique en français.
 
-**Note** : Pour des volumes massifs, il est conseillé de ne pas dépasser 3 institutions par heure en mode automatique pour éviter le bannissement de votre adresse IP.
+## 📁 Fichiers du Projet
+- `main_scraper.py` : Point d'entrée principal.
+- `openalex_extractor.py` : Extraction via API officielle.
+- `scholar_scraper.py` / `researchgate_scraper.py` : Scrapers web.
+- `social_searcher.py` : Module de sentiment et liens sociaux.
+- `google_snippet_scraper.py` : Fallback via Google Search.
