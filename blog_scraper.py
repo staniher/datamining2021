@@ -10,7 +10,7 @@ USER_AGENTS = [
 
 async def scrape_blog(url):
     """
-    Extrait le texte d'un blog pour l'analyse de sentiment.
+    Extrait le texte d'un blog.
     """
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
