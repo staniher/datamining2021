@@ -1,0 +1,4 @@
+auc:0.7833
+n_samples:200
+mean_lcr_coh:3.3594
+mean_lcr_incoh:4.8334
