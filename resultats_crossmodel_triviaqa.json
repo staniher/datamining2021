@@ -1,0 +1,254 @@
+{
+  "setup": {
+    "limit": 20,
+    "temperature": 0.7,
+    "delta": 0.25,
+    "lam": 1.0,
+    "cal_frac": 0.3,
+    "risk_target": 0.3,
+    "embedder": "sentence-transformers/all-MiniLM-L6-v2",
+    "notes": "Mistral uses 4-bit + CPU offload + reduced generation settings."
+  },
+  "runs": {
+    "qwen2p5_1p5b": {
+      "model": "qwen2p5_1p5b",
+      "dataset": "triviaqa",
+      "n_total": 20,
+      "n_cal": 6,
+      "n_test": 14,
+      "risk_target": 0.3,
+      "threshold_conseu": -1.000088900581841e-12,
+      "metrics_test": {
+        "ConSeU": {
+          "AUROC_error_detection": 0.7555555555555555,
+          "AUPRC_error_detection": 0.8403880070546739,
+          "ECE": 0.27551579045447006,
+          "Brier": 0.25062104072135455,
+          "AURC": 0.47656787656787664
+        },
+        "H_only": {
+          "AUROC_error_detection": 0.7555555555555555,
+          "AUPRC_error_detection": 0.8403880070546739,
+          "ECE": 0.25052732723946003,
+          "Brier": 0.23930045186120744,
+          "AURC": 0.47656787656787664
+        },
+        "Margin_only": {
+          "AUROC_error_detection": 0.6888888888888889,
+          "AUPRC_error_detection": 0.7570546737213404,
+          "ECE": 0.20006032573213142,
+          "Brier": 0.26948466760309614,
+          "AURC": 0.5311622900908616
+        },
+        "Dispersion": {
+          "AUROC_error_detection": 0.7777777777777778,
+          "AUPRC_error_detection": 0.8733605900272567,
+          "ECE": 0.365042843137456,
+          "Brier": 0.2927906568346853,
+          "AURC": 0.39054179947037093
+        }
+      },
+      "selective_test_conseu": {
+        "coverage": 0.35714285714285715,
+        "risk": 0.4
+      },
+      "sample_rows": [
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: In what year's Olympics were electric timing devices and a public-address system used for the first time?\nA:",
+          "generations": [
+            "1904",
+            "1904",
+            "1908",
+            "1908"
+          ],
+          "H": 0.6931471805579453,
+          "max_mass": 0.5,
+          "u_conseu": 1.1931471805579452,
+          "u_H": 0.6931471805579453,
+          "u_margin": 0.5,
+          "u_dispersion": 0.24271662533283234,
+          "cluster_labels": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.5,
+          "final_answer": "1904",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Who had a 70s No 1 hit with Kiss You All Over?\nA:",
+          "generations": [
+            "The Jackson 5",
+            "The Cars",
+            "Bobby Rydell",
+            "The Carpenters"
+          ],
+          "H": 1.3862943611158907,
+          "max_mass": 0.25,
+          "u_conseu": 2.1362943611158904,
+          "u_H": 1.3862943611158907,
+          "u_margin": 0.75,
+          "u_dispersion": 0.7372758984565735,
+          "cluster_labels": [
+            2,
+            3,
+            1,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.25,
+          "final_answer": "The Carpenters",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Who had an 80s No 1 hit with Hold On To The Nights?\nA:",
+          "generations": [
+            "Wham!",
+            "Cyndi Lauper",
+            "Cyndi Lauper",
+            "Michael Jackson"
+          ],
+          "H": 1.039720770836918,
+          "max_mass": 0.5,
+          "u_conseu": 1.539720770836918,
+          "u_H": 1.039720770836918,
+          "u_margin": 0.5,
+          "u_dispersion": 0.6192675232887268,
+          "cluster_labels": [
+            1,
+            0,
+            0,
+            2
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.5,
+          "final_answer": "Cyndi Lauper",
+          "correct": 0
+        }
+      ]
+    },
+    "qwen2p5_0p5b": {
+      "model": "qwen2p5_0p5b",
+      "dataset": "triviaqa",
+      "n_total": 20,
+      "n_cal": 6,
+      "n_test": 14,
+      "risk_target": 0.3,
+      "threshold_conseu": -1.000088900581841e-12,
+      "metrics_test": {
+        "ConSeU": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.24849862345128687,
+          "Brier": 0.1741054856384693,
+          "AURC": 0.9285714285714285
+        },
+        "H_only": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.25847464908983014,
+          "Brier": 0.18028588454944217,
+          "AURC": 0.9285714285714285
+        },
+        "Margin_only": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.29922267825409565,
+          "Brier": 0.2113176487045507,
+          "AURC": 0.9285714285714285
+        },
+        "Dispersion": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.5466390799066294,
+          "Brier": 0.4122991603526533,
+          "AURC": 0.9285714285714285
+        }
+      },
+      "selective_test_conseu": {
+        "coverage": 0.0,
+        "risk": 1.0
+      },
+      "sample_rows": [
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: In what year's Olympics were electric timing devices and a public-address system used for the first time?\nA:",
+          "generations": [
+            "1936 Summer Olympic Games. The first use of electric timing devices in an Olympic event",
+            "1904 Summer Olympics",
+            "1936 Summer Olympic Games",
+            "1936 Summer Olympics. The invention of electricity, which allowed the creation of the first"
+          ],
+          "H": 1.039720770836918,
+          "max_mass": 0.5,
+          "u_conseu": 1.539720770836918,
+          "u_H": 1.039720770836918,
+          "u_margin": 0.5,
+          "u_dispersion": 0.34251901507377625,
+          "cluster_labels": [
+            0,
+            1,
+            2,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.5,
+          "final_answer": "1936 Summer Olympic Games. The first use of electric timing devices in an Olympic event",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Who had a 70s No 1 hit with Kiss You All Over?\nA:",
+          "generations": [
+            "The Beatles, known for their iconic song \"Let It Be\". They released this hit in 1",
+            "Elvis Presley, the legendary American singer and musician known for his powerful voice and iconic hits such as",
+            "The band that had the 70s No 1 hit with \"Kiss You All Over",
+            "The Beatles"
+          ],
+          "H": 1.3862943611158907,
+          "max_mass": 0.25,
+          "u_conseu": 2.1362943611158904,
+          "u_H": 1.3862943611158907,
+          "u_margin": 0.75,
+          "u_dispersion": 0.6773064136505127,
+          "cluster_labels": [
+            3,
+            1,
+            2,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.25,
+          "final_answer": "The Beatles",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Who had an 80s No 1 hit with Hold On To The Nights?\nA:",
+          "generations": [
+            "The Beatles",
+            "Michael Jackson",
+            "The Beatles. They released their album \"The Beatles\" in 1963, which included",
+            "Paul Anka, known for his upbeat pop hits, including \"Hold On To The Nights\", was"
+          ],
+          "H": 1.3862943611158907,
+          "max_mass": 0.25,
+          "u_conseu": 2.1362943611158904,
+          "u_H": 1.3862943611158907,
+          "u_margin": 0.75,
+          "u_dispersion": 0.711977481842041,
+          "cluster_labels": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.25,
+          "final_answer": "Paul Anka, known for his upbeat pop hits, including \"Hold On To The Nights\", was",
+          "correct": 0
+        }
+      ]
+    }
+  }
+}
