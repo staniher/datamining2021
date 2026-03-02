@@ -1,0 +1,231 @@
+{
+  "setup": {
+    "limit": 20,
+    "n_samples": 2,
+    "max_new_tokens": 24,
+    "temperature": 0.7,
+    "delta": 0.25,
+    "lam": 1.0,
+    "cal_frac": 0.3,
+    "risk_target": 0.3,
+    "embedder": "sentence-transformers/all-MiniLM-L6-v2"
+  },
+  "runs": {
+    "qwen2p5_3b": {
+      "model": "qwen2p5_3b",
+      "dataset": "triviaqa",
+      "n_total": 20,
+      "n_cal": 6,
+      "n_test": 14,
+      "risk_target": 0.3,
+      "threshold_conseu": 0.0,
+      "metrics_test": {
+        "ConSeU": {
+          "AUROC_error_detection": 0.75,
+          "AUPRC_error_detection": 0.8571428571428572,
+          "ECE": 0.3571428571419346,
+          "Brier": 0.35714285714183197,
+          "AURC": 0.5223427366284509
+        },
+        "H_only": {
+          "AUROC_error_detection": 0.75,
+          "AUPRC_error_detection": 0.8571428571428572,
+          "ECE": 0.3571428571415715,
+          "Brier": 0.35714285714142857,
+          "AURC": 0.5223427366284509
+        },
+        "Margin_only": {
+          "AUROC_error_detection": 0.75,
+          "AUPRC_error_detection": 0.8571428571428572,
+          "ECE": 0.3571428571412234,
+          "Brier": 0.3571428571410418,
+          "AURC": 0.5223427366284509
+        },
+        "Dispersion": {
+          "AUROC_error_detection": 0.8625,
+          "AUPRC_error_detection": 0.9464285714285714,
+          "ECE": 0.4700021006374838,
+          "Brier": 0.41256588690804236,
+          "AURC": 0.46451960737675024
+        }
+      },
+      "selective_test_conseu": {
+        "coverage": 0.6428571428571429,
+        "risk": 0.5555555555555556
+      },
+      "sample_rows": [
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: In what year's Olympics were electric timing devices and a public-address system used for the first time?\nA:",
+          "generations": [
+            "1964 Tokyo Olympics",
+            "1960 Summer Olympics in Rome"
+          ],
+          "H": 0.6931471805579453,
+          "max_mass": 0.5,
+          "u_conseu": 1.1931471805579452,
+          "u_H": 0.6931471805579453,
+          "u_margin": 0.5,
+          "u_dispersion": 0.3703136444091797,
+          "cluster_labels": [
+            1,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.5,
+          "final_answer": "1960 Summer Olympics in Rome",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Who had a 70s No 1 hit with Kiss You All Over?\nA:",
+          "generations": [
+            "Cher",
+            "Cher"
+          ],
+          "H": 0.0,
+          "max_mass": 1.0,
+          "u_conseu": 0.0,
+          "u_H": 0.0,
+          "u_margin": 0.0,
+          "u_dispersion": 1.1920928955078125e-07,
+          "cluster_labels": [
+            0,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 1.0,
+          "final_answer": "Cher",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Who had an 80s No 1 hit with Hold On To The Nights?\nA:",
+          "generations": [
+            "Huey Lewis and the News",
+            "Heart"
+          ],
+          "H": 0.6931471805579453,
+          "max_mass": 0.5,
+          "u_conseu": 1.1931471805579452,
+          "u_H": 0.6931471805579453,
+          "u_margin": 0.5,
+          "u_dispersion": 0.7738943099975586,
+          "cluster_labels": [
+            1,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.5,
+          "final_answer": "Heart",
+          "correct": 0
+        }
+      ]
+    },
+    "tinyllama_1p1b": {
+      "model": "tinyllama_1p1b",
+      "dataset": "triviaqa",
+      "n_total": 20,
+      "n_cal": 6,
+      "n_test": 14,
+      "risk_target": 0.3,
+      "threshold_conseu": 1.133489821530048,
+      "metrics_test": {
+        "ConSeU": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.3571428571423446,
+          "Brier": 0.35714285714183197,
+          "AURC": 0.9285714285714285
+        },
+        "H_only": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.3571428571421429,
+          "Brier": 0.35714285714142857,
+          "AURC": 0.9285714285714285
+        },
+        "Margin_only": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.3571428571419495,
+          "Brier": 0.3571428571410418,
+          "AURC": 0.9285714285714285
+        },
+        "Dispersion": {
+          "AUROC_error_detection": NaN,
+          "AUPRC_error_detection": NaN,
+          "ECE": 0.46931974869226456,
+          "Brier": 0.3724947256089943,
+          "AURC": 0.9285714285714285
+        }
+      },
+      "selective_test_conseu": {
+        "coverage": 0.35714285714285715,
+        "risk": 1.0
+      },
+      "sample_rows": [
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Of which African country is Niamey the capital?\nA:",
+          "generations": [
+            "Niamey is the capital of Niger.",
+            "The capital of Niger is Niamey."
+          ],
+          "H": 0.0,
+          "max_mass": 1.0,
+          "u_conseu": 0.0,
+          "u_H": 0.0,
+          "u_margin": 0.0,
+          "u_dispersion": 0.011416494846343994,
+          "cluster_labels": [
+            0,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 1.0,
+          "final_answer": "Niamey is the capital of Niger.",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Which actress was voted Miss Greenwich Village in 1942?\nA:",
+          "generations": [
+            "Marilyn Monroe.",
+            "Barbara Stanwyck."
+          ],
+          "H": 0.6931471805579453,
+          "max_mass": 0.5,
+          "u_conseu": 1.1931471805579452,
+          "u_H": 0.6931471805579453,
+          "u_margin": 0.5,
+          "u_dispersion": 0.5296221375465393,
+          "cluster_labels": [
+            1,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.5,
+          "final_answer": "Barbara Stanwyck.",
+          "correct": 0
+        },
+        {
+          "prompt": "Answer the trivia question with a short factual phrase. Do not add explanations.\nQ: Who had a 70s No 1 hit with Kiss You All Over?\nA:",
+          "generations": [
+            "The Doors.",
+            "It was the pop group Kiss."
+          ],
+          "H": 0.6931471805579453,
+          "max_mass": 0.5,
+          "u_conseu": 1.1931471805579452,
+          "u_H": 0.6931471805579453,
+          "u_margin": 0.5,
+          "u_dispersion": 0.807445764541626,
+          "cluster_labels": [
+            1,
+            0
+          ],
+          "dominant_cluster": 0,
+          "dominant_cluster_mass": 0.5,
+          "final_answer": "It was the pop group Kiss.",
+          "correct": 0
+        }
+      ]
+    }
+  }
+}
