@@ -1,50 +1,38 @@
-from flask import Flask,request,render_template
-import numpy as np
-import joblib
-import pandas as pd
-from datetime import datetime,timedelta
-app=Flask(__name__)
+from flask import Flask, request, render_template # Importation des bibliothèques Flask pour le serveur web
+import joblib # Importation de joblib pour charger notre modèle d'IA et l'encodeur
+import numpy as np # Importation de numpy pour la manipulation des tableaux de données
+import pandas as pd # Importation de pandas pour la manipulation des séries temporelles
+from datetime import datetime # Importation de datetime pour gérer les dates
 
-@app.route('/')
-#Cette fonction retourne la page index.html de notre projet
-def home():
-    return render_template('index.html')   
-@app.route('/predict', methods=['GET', 'POST']) #predict sera indiqué dans le form de html comme action pour permettre d'appeler la methode predict
-#La fonction ci-dessous fait la prediction
-def predict():
-    #Nous chargeons notre modele sauvegardé dans le projet Flask pour l'utiliser
-    model=joblib.load('ModelL2CSI2021.ml')
-    #Nous récupérons toutes les valeurs saisies dans le formulaire html sous forme d'une liste
-    string_features=[i for i in request.form.values()]
-    #On recupere la derniere valeur de la liste(cad date d'entree a l'hopital)
-    date_hospitalisation =string_features[-1]  
-    #On recupere toutes les valeurs de la liste (Genre,Age,Maladie,Service) sauf la derniere 
-    features_model = [string_features[0],string_features[1],string_features[2],string_features[3]]
-    #On reshape les features pour le rendre un vecteur np capable d'etre introduits dans le modele pour la prediction
-    features_model=np.array([features_model]).reshape(1,4)
-    #On predit en utilisant le modele qui a été chargé ci-haut
-    prediction=model.predict(features_model)[0]
-    #On convertit la date de l'entree à l'hopital en datetime pour nous aider à y tirer le jour, le mois, l'annee pour une sortie plus aisée de prédiction
-    date_entree_hopital=pd.to_datetime(date_hospitalisation)
-    #Nous ajoutons les jours predits de sortie a l'hopital a la date saisie
-    #de l'entree a l'hopital pour trouver la date de sortie
-    date_sortie_hopital = date_entree_hopital + timedelta(days=prediction) #Prediction ici contient le nombre de jours predits 
-    #On recupere le jour en francais(Par exemple Samedi, Lundi...)
-    jour_semaine_sortie=date_sortie_hopital.day_name()
-    #On recupere le mois en francais(Par exemple Janvier, Mars...)
-    mois_sortie=date_sortie_hopital.month_name()
-    #On recupere l'annee de sortie de l'hopital(Par exemple 2021)
-    annee_sortie = date_sortie_hopital.year
-    #On recupere le jour de sortie de l'hopital(Par exemple 11, 25, 30)
-    jour_date_sortie = date_sortie_hopital.day
-    #On prepare la chaine de retour contenant la prediction de la date de sortie
-    chaine_prediction=" a la probabilité de sortir de l'hopital le "+str(jour_semaine_sortie) + ", "+str(jour_date_sortie) + " "+ str(mois_sortie) + " "+ str(annee_sortie) 
-    #On retourne la page index.html avec le resultat formaté. N.B: prediction_text sera appelé dans la page index.html pour retourner le resultat
-    return render_template('index.html',prediction_text='Ce Patient {}'.format(chaine_prediction))
-#On execute notre application Flask
-if __name__ == "__main__":
-    app.run(debug=True)
+app = Flask(__name__) # Initialisation de l'application Flask
+
+@app.route('/') # Définition de la route principale pour afficher la page d'accueil
+def home(): # Fonction pour gérer l'affichage de la page d'accueil
+    return render_template('index.html') # Retourne le template 'index.html' du tableau de bord
+
+@app.route('/predict', methods=['POST']) # Définition de la route pour effectuer les prédictions
+def predict(): # Fonction pour gérer le processus de prédiction
+    model = joblib.load('agri_model.joblib') # Chargement du modèle Random Forest sauvegardé
+    le = joblib.load('product_encoder.joblib') # Chargement de l'encodeur de produits sauvegardé
+
+    produit_nom = request.form.get('produit') # Récupération du nom du produit agricole du formulaire
+    demande = int(request.form.get('demande')) # Récupération et conversion du niveau de demande
+    saison = int(request.form.get('saison')) # Récupération et conversion de la saison actuelle
     
+    try: # Début du bloc de capture d'erreurs pour la transformation
+        produit_encoded = le.transform([produit_nom])[0] # Transformation du nom du produit en valeur numérique
+    except Exception as e: # Capture de toute exception lors de la transformation
+        return render_template('index.html', prediction_text="Erreur d'encodage.") # Retourne une erreur en cas de problème
     
+    features = np.array([[produit_encoded, demande, saison]]) # Préparation du vecteur de caractéristiques pour l'IA
     
+    prediction = model.predict(features)[0] # Utilisation du modèle IA pour prédire le prix futur
     
+    prix_formate = "{:.2f}".format(prediction) # Formatage du prix prédit avec deux chiffres après la virgule
+
+    chaine_prediction = f"Le prix prédit pour le {produit_nom} est de {prix_formate} FC." # Préparation du message final
+
+    return render_template('index.html', prediction_text=chaine_prediction) # Retourne la page avec le résultat de prédiction
+
+if __name__ == "__main__": # Vérification si le script est exécuté directement
+    app.run(debug=True) # Lancement de l'application Flask avec le mode débug activé
