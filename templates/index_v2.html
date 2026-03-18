@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- Méta-données et liens vers Bootstrap 5 pour une interface réactive -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Butembo-AI : Cartographie Résiliente des Crises</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Styles personnalisés pour le contexte de Butembo-AI */
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .hero { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 40px 0; margin-bottom: 30px; border-bottom: 5px solid #fbbf24; }
+        .card-ai { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; }
+        #lcr-indicator { height: 10px; border-radius: 5px; background-color: #e5e7eb; margin-top: 10px; }
+        .uncertainty-high { background-color: #ef4444 !important; }
+        .uncertainty-low { background-color: #10b981 !important; }
+    </style>
+</head>
+<body>
+    <!-- En-tête de l'application -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">BUTEMBO-AI</h1>
+            <p class="lead">Système de Cartographie des Crises par IA Topologiquement-Informée</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="row g-4">
+            <!-- Panneau de saisie des rapports (Multilingue : FR/SW) -->
+            <div class="col-md-6">
+                <div class="card card-ai p-4 h-100">
+                    <h3 class="mb-3">Rapport de Crise Local</h3>
+                    <div class="mb-3">
+                        <label for="reportInput" class="form-label text-muted">Saisir l'alerte (Français ou Swahili)...</label>
+                        <textarea class="form-control" id="reportInput" rows="5" placeholder="Ex: Ghasia ya incursion imeripotiwa Furu na milice locale..."></textarea>
+                    </div>
+                    <button id="analyzeBtn" class="btn btn-primary btn-lg w-100 fw-bold">Analyser l'Alerte</button>
+                </div>
+            </div>
+
+            <!-- Panneau de résultats et incertitude LCR (Topologie) -->
+            <div class="col-md-6">
+                <div class="card card-ai p-4 h-100 bg-white">
+                    <h3>Analyse IA & Robustesse</h3>
+                    <div id="resultsArea" style="display: none;">
+                        <div class="alert alert-info mt-3" id="entityBox">
+                            <strong>Type d'Entité : </strong> <span id="resType">--</span>
+                        </div>
+                        <div class="mt-4">
+                            <h5>Score d'Incertitude Topologique (LCR)</h5>
+                            <p class="text-muted small">Mesure la robustesse structurelle du modèle face aux bruits de conflit.</p>
+                            <div id="lcr-indicator" class="w-100"></div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span id="lcrVal" class="fw-bold">0.00</span>
+                                <span id="lcrStatus" class="badge rounded-pill">Stable</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="placeholderArea" class="text-center text-muted py-5">
+                        <p>Les résultats d'analyse s'afficheront ici après soumission.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script JavaScript pour l'interaction avec l'API Flask -->
+    <script>
+        document.getElementById('analyzeBtn').addEventListener('click', async () => {
+            const text = document.getElementById('reportInput').value;
+            if (!text) return alert("Veuillez saisir un texte.");
+
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+
+            const data = await response.json();
+
+            // Affichage des résultats
+            document.getElementById('placeholderArea').style.display = 'none';
+            document.getElementById('resultsArea').style.display = 'block';
+            document.getElementById('resType').innerText = data.entity_type;
+            document.getElementById('lcrVal').innerText = data.lcr_score.toFixed(4);
+
+            // Mise à jour visuelle de l'indicateur d'incertitude LCR
+            const lcrBar = document.getElementById('lcr-indicator');
+            const statusBadge = document.getElementById('lcrStatus');
+
+            lcrBar.className = data.is_uncertain ? 'uncertainty-high' : 'uncertainty-low';
+            statusBadge.innerText = data.status;
+            statusBadge.className = 'badge rounded-pill ' + (data.is_uncertain ? 'bg-danger' : 'bg-success');
+        });
+    </script>
+</body>
+</html>
