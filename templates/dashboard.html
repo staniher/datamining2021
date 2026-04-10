@@ -1,0 +1,55 @@
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Tableau de Bord - Hôpital Shalom</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">Hôpital Shalom</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Enregistrement</a></li>
+          <li class="nav-item"><a class="nav-link" href="/patients">Liste des Patients</a></li>
+          <li class="nav-item active"><a class="nav-link" href="/dashboard">Tableau de Bord</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="container">
+        <h3 class="mb-4">Statistiques de l'Hôpital</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+              <div class="card-header">Total Patients</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ total_patients }}</h5>
+                <p class="card-text">Nombre total de malades enregistrés.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+              <div class="card-header">Sorties Prévues (Aujourd'hui)</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ sorties_aujourdhui }}</h5>
+                <p class="card-text">Basé sur les prédictions IA.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+              <div class="card-header">Service le plus actif</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ service_actif }}</h5>
+                <p class="card-text">Service avec le plus de patients.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
