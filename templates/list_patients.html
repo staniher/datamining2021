@@ -1,0 +1,64 @@
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Liste des Patients - Hôpital Shalom</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">Hôpital Shalom</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Enregistrement</a></li>
+          <li class="nav-item active"><a class="nav-link" href="/patients">Liste des Patients</a></li>
+          <li class="nav-item"><a class="nav-link" href="/dashboard">Tableau de Bord</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="container">
+        <h3 class="mb-4">Gestion des Patients</h3>
+        <div class="table-responsive" style="background: white; border-radius: 8px; padding: 20px;">
+          <table class="table table-hover" style="color: black;">
+            <thead>
+              <tr style="background: #697c37; color: white;">
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Genre</th>
+                <th>Âge</th>
+                <th>Service</th>
+                <th>Date Entrée</th>
+                <th>Sortie Prédite</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for patient in patients %}
+              <tr>
+                <td>{{ patient.id }}</td>
+                <td>{{ patient.nom }}</td>
+                <td>{{ 'M' if patient.genre == 1 else 'F' }}</td>
+                <td>{{ patient.age }}</td>
+                <td>
+                  {% if patient.service == 0 %}Pédiatrie
+                  {% elif patient.service == 1 %}Hospitalisation
+                  {% elif patient.service == 2 %}Gynécologie
+                  {% elif patient.service == 3 %}Néonatologie
+                  {% endif %}
+                </td>
+                <td>{{ patient.date_entree.strftime('%d/%m/%Y') }}</td>
+                <td>{{ patient.date_sortie_predite.strftime('%d/%m/%Y') }}</td>
+                <td>
+                  <a href="{{ url_for('delete', id=patient.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?')">Supprimer</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
